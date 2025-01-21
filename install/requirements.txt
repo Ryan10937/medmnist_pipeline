@@ -1,0 +1,2 @@
+matplotlib
+medmnist==3.0.2

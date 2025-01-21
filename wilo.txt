@@ -1,0 +1,18 @@
+WILO 
+1/20/2025
+training and inference are working, inference is in a docker container
+
+todos
+  add flask app to be able to use inference dockerfile from an endpoint
+
+  ppt on ants
+  Add image processing step
+    augmentation?
+    feature generation?
+  model training
+    mlflow?
+
+
+  
+
+
