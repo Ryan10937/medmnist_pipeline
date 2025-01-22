@@ -22,8 +22,6 @@ if __name__ == '__main__':
 
 
   dataset_dict = get_dataset(args.dataset_name,args.batch_size,image_size=args.image_size)#get dataset from medmnist
-  
-
 
   #train model, store training history for later
   model = load_model(args.image_size)#define and compile model

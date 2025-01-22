@@ -27,8 +27,9 @@ if __name__ == '__main__':
   ## load model
   model = tf.keras.models.load_model(args.model_path)
 
+  label_to_class = {0: 'adipose', 1: 'background', '2': 'debris', 3: 'lymphocytes', 4: 'mucus', 5: 'smooth muscle', 6: 'normal colon mucosa', 7: 'cancer-associated stroma', 8: 'colorectal adenocarcinoma epithelium'}
   ## perform inference on folder
   predictions = model.predict(images,verbose=0)
-  results = pd.DataFrame({'image_path':image_paths,'Prediction':[np.argmax(x) for x in predictions]})
+  results = pd.DataFrame({'image_path':image_paths,'Prediction':[label_to_class[np.argmax(x)] for x in predictions]})
   results.to_csv('results/predictions.csv')
   

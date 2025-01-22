@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <!-- Home Button -->
+    <a href="/">
+        <button>Home</button>
+    </a>
+
+    <h1>Upload a Pathology Image for Classification! </h1>
+    
+    <!-- Display blank image -->
+    <img src="https://via.placeholder.com/150" alt="Blank Image" width="150" height="150">
+
+    <br><br>
+
+    <!-- Load Images Button -->
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" id="file" multiple>
+        <br><br>
+        <button type="submit">Load Images</button>
+    </form>
+    
+    <br>
+    
+    <!-- Infer Button -->
+    <a href="/infer">
+        <button>Infer</button>
+    </a>
+
+    <br><br>
+
+    
+    {% if message %}
+    <p>{{ message }}</p>
+    {% endif %}
+</body>
+</html>

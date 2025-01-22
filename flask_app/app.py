@@ -1,74 +1,56 @@
-from flask import Flask, request, redirect, url_for, render_template,render_template_string
 import os
+from flask import Flask, request, render_template, redirect, url_for
+from werkzeug.utils import secure_filename
 import subprocess
 import pandas as pd
 app = Flask(__name__)
 
-# Folder to store uploaded images
+# Set the upload folder and allowed extensions
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Check if the uploaded file has a valid extension
+# Create the uploads directory if it doesn't exist
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+# Function to check if the file extension is allowed
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Route for uploading images
 @app.route('/')
-def upload_form():
-    return render_template('upload.html')
+def home():
+    return render_template('home.html')
 
-# Route for handling the file upload
 @app.route('/upload', methods=['POST'])
-def upload_file():
+def upload_images():
     if 'file' not in request.files:
-        return redirect(request.url)
-    
-    file = request.files['file']
-    
-    if file and allowed_file(file.filename):
-        filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-        file.save(filename)
-        
-        # Call inference.py to process the uploaded image
-        result = subprocess.run(['python', 'inference.py', filename], capture_output=True, text=True)
-        
-        # Handle the output from the inference script (result.stdout)
-        return f'Image uploaded'
-        # return f'Inference result: {result.stdout}'
-    else:
-        return 'Invalid file type. Only images are allowed.'
-@app.route('/infer', methods=['GET'])
+        return 'No file part', 400
+
+    files = request.files.getlist('file')
+
+    # If no files are selected
+    if len(files) == 0 or any(file.filename == '' for file in files):
+        return 'No selected file', 400
+
+    # Save the images
+    for file in files:
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(UPLOAD_FOLDER, filename)
+            file.save(filepath)
+
+    return render_template('home.html', message="Images uploaded successfully!")
+
+@app.route('/infer')
 def infer():
     result = subprocess.run(['./infer_on_data_folder.sh'], check=True, capture_output=True, text=True)
     results_df = pd.read_csv('results/predictions.csv')
     df_html = results_df.to_html(classes='table table-bordered', index=False)
     
     # Render the DataFrame as an HTML page
-    return render_template_string("""
-        <!doctype html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>DataFrame Display</title>
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-        </head>
-        <body>
-            <div class="container mt-5">
-                <h1>Displaying Pandas DataFrame</h1>
-                <div class="table-responsive">
-                    {{ df_html|safe }}
-                </div>
-            </div>
-        </body>
-        </html>
-    """, df_html=df_html)
-
+    return render_template('display_dataframe_results.html', df_html=df_html)
+@app.route('/stop', methods=['GET'])
+def stop():
+    os._exit(0)
 if __name__ == '__main__':
-    # Ensure the upload folder exists
-    if not os.path.exists(UPLOAD_FOLDER):
-        os.makedirs(UPLOAD_FOLDER)
-    
     app.run(debug=True,host='0.0.0.0',port=9000)
-
