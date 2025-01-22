@@ -1,5 +1,6 @@
 import numpy as np
 import tensorflow as tf
+from scripts.image_augmentation import augment_images
 def train_model(model,dataset_dict:dict,data_limit,epochs):
   train_len = len(dataset_dict['train_dataset']) if data_limit is None else data_limit
   # train_history_arr = []
@@ -12,9 +13,10 @@ def train_model(model,dataset_dict:dict,data_limit,epochs):
   #     train_history_arr.append(training_history.history)
   #     if train_counter*len(train_x) >= train_len:
   #       break
-  X=np.array([x for x,y in dataset_dict['train_dataset']])
+  X=np.array(augment_images([x for x,y in dataset_dict['train_dataset']]))
+
   y=np.array([y for x,y in dataset_dict['train_dataset']])
-  val_X=np.array([x for x,y in dataset_dict['validation_dataset']])
+  val_X=np.array(augment_images([x for x,y in dataset_dict['validation_dataset']]))
   val_y=np.array([y for x,y in dataset_dict['validation_dataset']])
   train_history = model.fit(X,
                             y,

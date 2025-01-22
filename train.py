@@ -20,11 +20,13 @@ if __name__ == '__main__':
   
   plotting_info={}
 
-  model = load_model(args.image_size)#define and compile model
 
   dataset_dict = get_dataset(args.dataset_name,args.batch_size,image_size=args.image_size)#get dataset from medmnist
   
+
+
   #train model, store training history for later
+  model = load_model(args.image_size)#define and compile model
   train_history_arr = train_model(model,dataset_dict,args.data_limit,args.epochs)
 
 
