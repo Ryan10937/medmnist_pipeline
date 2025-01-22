@@ -1,6 +1,8 @@
 # Getting Started
 Clone this repo and cd to the medmnist_pipeline folder
+
 Navigate to a new python environment and pip install the requirements file in install folder using:
+
 pip install -r install/requirement.txt
 
 
