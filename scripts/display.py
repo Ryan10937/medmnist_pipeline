@@ -20,7 +20,7 @@ def get_dataset_information(information:dict):
   plt.savefig('figures/class_distribution.png')
 
 def train_history_plots(information):
-  train_history_arr = information['train_history_arr']
+  train_history_arr = information['train_history_arr'].history
   plt.figure()
   plt.plot(np.array([hist['accuracy'] for hist in train_history_arr]).flatten())
   plt.plot(np.array([hist['val_accuracy'] for hist in train_history_arr]).flatten())
