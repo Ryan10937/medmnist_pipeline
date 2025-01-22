@@ -40,16 +40,6 @@ def load_model(image_size):
     base_model = ResNet50(weights='imagenet', include_top=False, input_shape=(image_size,image_size,3))
     base_model.trainable = False
     model=tf.keras.Sequential([
-      # tf.keras.layers.Conv2D(64,(3,3),activation='relu',input_shape=(image_size,image_size,3)),#may need to be greyscale
-      # tf.keras.layers.MaxPooling2D((2, 2)),
-      # tf.keras.layers.Conv2D(128,(3,3),activation='relu'),#may need to be greyscale
-      # tf.keras.layers.MaxPooling2D((2, 2)),
-      # tf.keras.layers.Flatten(),
-      # tf.keras.layers.Dense(128,activation='sigmoid'),
-      # tf.keras.layers.Dense(128,activation='sigmoid'),
-      # tf.keras.layers.Dense(128,activation='sigmoid'),
-      # tf.keras.layers.Dense(128,activation='sigmoid'),
-
       base_model,
       tf.keras.layers.GlobalAveragePooling2D(),
       tf.keras.layers.Dense(9,activation='softmax'),

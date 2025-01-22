@@ -40,7 +40,7 @@ def upload_file():
         return 'Invalid file type. Only images are allowed.'
 @app.route('/infer', methods=['GET'])
 def infer():
-    result = subprocess.run(['./inference_script.sh'], check=True, capture_output=True, text=True)
+    result = subprocess.run(['./infer_on_data_folder.sh'], check=True, capture_output=True, text=True)
     results_df = pd.read_csv('results/predictions.csv')
     df_html = results_df.to_html(classes='table table-bordered', index=False)
     
@@ -69,5 +69,6 @@ if __name__ == '__main__':
     # Ensure the upload folder exists
     if not os.path.exists(UPLOAD_FOLDER):
         os.makedirs(UPLOAD_FOLDER)
+    
     app.run(debug=True,host='0.0.0.0',port=9000)
 
